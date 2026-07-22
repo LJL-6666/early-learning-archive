@@ -1,0 +1,37 @@
+rm(list = ls())
+#读入数据
+data = read.csv("G:/数据透视.R/000001.csv")
+#选取要分析的日期列和收盘价
+data = data[,c(1,4)]
+
+# 对日期排序，升序
+data=data[order(data$日期,na.last = NA,decreasing = F),]
+
+#安装要使用的两个包，lubridate抓取日期的时间元素，plyr对数据透视分析
+install.packages("lubridate")
+install.packages("plyr")
+#调用这两个包
+library(lubridate)
+library(plyr)
+
+###提取数据元素
+##把日期设置为时间列
+data$日期 = as.POSIXct(data$日期)
+##依次提取，R中数据表名称+新的变量含义是在数据表中新增一列
+data$month=month(data$日期) 
+data$year=year(data$日期)
+data$day=day(data$日期)
+data$week= week(data$日期)
+
+#透视形成月均值
+##月均值
+monthmean = ddply(data1,.(year,month),function(x)data.frame(monthmean=mean(x$收盘价)))
+
+##月均值和标准差
+monthvalue = ddply(data1,.(year,month),function(x)data.frame(monthmean=mean(x$收盘价),monthstd=sd(x$收盘价)))
+
+##周均值
+weekmean = ddply(data1,.(year,month,week),function(x)data.frame(weekmean=mean(x$收盘价)))
+##保存数据
+write.csv(monthmean,"monthmean.csv")
+

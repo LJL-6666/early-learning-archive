@@ -1,0 +1,65 @@
+---
+title: "R-12作业"
+author: "程茜"
+date: "10/3/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+```
+
+## 对烟排量数据进行乳腺癌操作：
+   时间格式的处理,并去重。有的时间数值还有30秒的时间数据，我们的处理方式是只保留年月日小时分钟的时间格式，并去重。
+### 1、读入数据，显示其前六行，并显示每个字段的数据类型,计算此时的维度
+```{r}
+dat <- read.csv("F:\\异类语言\\R\\第12次作业\\第12次课\\作业\\烟排量.csv")
+data <- dat[,-1]
+head(data)
+str(data)
+dim(data)
+```
+
+### 2、对字段datatime进行类型更改，改为时间类型
+```{r}
+Q <- as.Date(data$datatime)
+head(Q)
+```
+
+### 3、把时间类型更改为年月日小时分,显示此时的数据
+```{r}
+ time <- format(time,format="%Y-%m-%d %H:%M")
+data$datatime<-time
+head(data)
+```
+
+### 4、对时间进行去重
+```{r}
+
+data1 <- data[!duplicated(data$datatime),]
+dim(data1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

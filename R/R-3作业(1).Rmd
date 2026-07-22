@@ -1,0 +1,84 @@
+---
+title: "R-3作业"
+author: "姓名"
+date: "2019/9/10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+##R-3作业
+1、自己创建一个数据框，该数据框有3个字段，
+```{r}
+star1 = c("邓超", "赵丽颖", "郭富城", "周润发", "杰克布莱克", "汤唯", "白敬亭", "陈晓", "梁家辉", "姚晨", "宋茜", "黄宗泽", "黄晓明")
+birthyear = c(1979, 1987, 1965, 1955, 1969, 1979, 1993, 1987, 1958, 1979, 1987, 1980, 1977)
+gender = c("男", "女", "男", "男", "男", "女", "男", "男", "男", "女", "女", "男", "男")
+stars = data.frame(star1, birthyear, gender); head(stars)
+```
+### 2.读入电影数据，并查看其前六行
+```{r}
+# 读入一个txt,csv等格式数据,即自成一个数据框
+movie = read.csv("D://Desktop//R语言 助教//第三节//作业//电影数据.csv", fileEncoding = "UTF-8", stringsAsFactors = F)
+head(movie)
+```
+3、查看读入的数据的数据结构类型
+```{r}
+class(movie)
+```
+
+4、查看每个字段的数据类型
+
+```{r}
+str(movie)
+```
+
+
+5、添加一列数据prefer
+```{r}
+prefer = 1:19
+movie$pre = prefer
+head(movie)
+```
+
+6、查看第3行的电影信息
+```{r}
+movie[3, ] 
+```
+
+7、查看第8列主演者的名字
+```{r}
+movie[, 8]
+```
+
+8、用$符号通过列名引用
+```{r}
+movie$star1
+```
+
+9、选择数据中的动作电影
+```{r}
+action = movie[movie$type == "动作", ]
+action
+```
+
+10、放映时间超过100分钟的动作电影
+```{r}
+action_long = movie[movie$type == "动作" & movie$duration > 100, ]
+action_long
+```
+
+11、将movie前3行数据和stars按照列star1匹配并合并起来
+```{r}
+movie.star = merge(movie[1:3, ], stars,by = "star1")
+movie.star
+```
+
+
+
+
+
+
+
+

@@ -1,0 +1,76 @@
+rm(list = ls()) #清除变量
+data1 = read.csv("E:/20190704 教学课程/20190707金融数据处理与分析/20190825 金融数据处理和分析 2019-2010年第一学期/第16次课/01 simudata.csv") #读入数据
+
+#Part1 相关系数计算和画图
+cor_matr = cor(data1[,2:9]) #计算相关系数计算
+
+install.packages("corrplot") #安装
+library(corrplot) #加载
+corrplot(cor_matr, type="lower", order="hclust", tl.col="black", tl.srt=45) #相关矩阵图 lower：下三角 upper：上三角 full：全部 tl.col:文本颜色 order：相关系数的排序方法 hclus t1.srt=45:字体旋转的角度
+
+#Part2:简单线性回归
+fit0 = lm(收入 ~ 微博好友数+消费理念,data = data1)
+summary(fit0)
+
+fit01 = lm(收入 ~ .,data = data1) #简化的形式 .表示考虑除了收入的所有变量
+summary(fit01)
+
+#Part3 虚拟变量回归
+str(data1)
+#设定因子
+data1$性别=as.factor(data1$性别)
+data1$已婚_未婚=as.factor(data1$已婚_未婚)
+data1$已育_未育=as.factor(data1$已育_未育)
+data1$教育水平=as.factor(data1$教育水平)
+data1$英语水平=as.factor(data1$英语水平)
+str(data1)
+
+fit1 = lm(收入 ~.,data = data1) 
+summary(fit1)
+
+#Par4 逻辑回归
+fit2 = glm(是否按期还款 ~ .,data = data1,family = binomial) #假设Y服从二项分布
+summary(fit2)
+
+#part5 基于准则的变量选择
+install.packages("MASS") #安装
+library(MASS)
+
+#AIC 准则
+fit31=step(fit2,trace=F) #逐步回归 
+summary(fit31)
+
+#BIC准则 BIC的惩罚项比AIC的大，考虑了样本数量，样本数量过多时，可有效防止模型精度过高造成的模型复杂度过高。
+fit32 = step(fit2,k=log(nrow(data1)),trace=F)
+summary(fit32)
+
+#Part6 预测和模型应用
+pre=predict(fit2,data=data1)
+pre
+p=exp(pre)/(1+exp(pre)) #转化为0-1之间
+p
+datap=data.frame(data1,p)
+
+#计算混淆矩阵
+data11=predict(fit2,data1,type="response") #逻辑回归默认type="response"
+data12=ifelse(data11>0.5,1,0)
+data12
+
+#计算准确率
+confusematrix=table(data1$是否按期还款,data12)
+confusematrix
+p=(confusematrix[1,1]+confusematrix[2,2])/sum(confusematrix)
+p
+
+#Part7 分测试集的回归
+split = sample(nrow(data1),nrow(data1)*(7/10),replace=F) #replace=F 不放回抽样
+train = data1[split,]# 训练
+test = data1[-split,]# 测试
+model = glm(formula = 是否按期还款 ~ ., family = "binomial",data = train)
+summary(model)
+p = predict(model,test,type="response")
+p
+error=p-test$是否按期还款 #一般不这样计算 需要先根据概率判断为0和1，然后再计算混淆矩阵
+
+
+

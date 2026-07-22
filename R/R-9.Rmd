@@ -1,0 +1,260 @@
+---
+title: "R-9apply族函数"
+author: "程茜"
+date: "2019/9/23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1、常用函数
+R语言中应用于数值计算和统计分析的数值函数，主要可分成数学、统计和概率函数三大类。
+### 1）数学函数
+
+命令|描述
+ |-|-|-|
+ |abs(x)|绝对值|
+ |sqrt(x)|平方根|
+ |ceiling(x)|求不小于x的最小整数|
+ |floor(x)|求不大于x的最大整数|
+ |round(x,digits(x))|舍入位数的小数|
+ |log(x,base=n)|对数|
+ |exp(x)|指数|
+
+### 2)统计函数
+ |函数|功能|
+ |-|-|
+ |mean(x)|均值|
+ |median(x)|中位数|
+ |sd(x)|标准差|
+ |var(x)|方差|
+ |round(x)|舍入位数的小数|
+ |quantile(x,probs)|百分位数|
+ |range(x)|范围|
+ |sum(x)|求和|
+ |min(x)|最小值|
+ |max(x)|最大值|
+ |scale(x)|中心化|
+ |diff(x)|差分|
+ |difftime(time1,time2,units=c("auto","mins","hours","days","weeks"))|计算时间间隔
+
+### 3）概率函数
+|分布名称|缩写|
+|-|-|
+|正态分布|nrom|
+|指数分布|exp|
+|泊松分布|pois|
+
+例如：随机生成正态分布数据并求其密度和分位数
+
+```{r}
+data <- rnorm(20)
+data
+```
+
+```{r}
+#计算各个值对应的标准正态分布的密度
+dnorm(data)
+```
+
+```{r}
+#计算标准正态分布的0.9分位数
+pnorm(0.9,mean=0,sd=1)
+```
+
+## 2、使用 apply函数族批量处理数据
+    R语言中的一类函数有非常有意思的特性，可以应用到一系列的数据对象上。包括向量、矩阵、数据框和列表上。在R语言上将函数应用于不同的数据对象，主要借助apply函数族来实现。
+   
+|函数名称|使用对象|返回结果|
+|-|-|-|
+|apply|矩阵、数组、数据框|向量、数组或列表|
+|lapply|列表、数据框、向量|列表|
+|sapply|列表、数据框、向量|向量，数组或列表|
+|mapply|多个列表|列表|
+ 
+  1）apply 函数
+  apply((矩阵/ 数据框)，（1行/2列），使用的函数)
+```{r}
+x <- matrix(1:20,ncol=4)
+x
+```
+  
+```{r}
+#计算各行均值
+apply(x,1,mean)
+```
+
+```{r}
+#计算各列均值
+apply(x,2,mean)
+```
+
+2) lapply函数
+lapply函数可以对对象x 的每一个元素运用一个函数，生成一个与元素个数相同的列表。
+lapply(x,fun)
+
+```{r}
+x <- list(a=1:5,b=exp(0:3))
+x
+```
+
+
+```{r}
+lapply(x,mean) #对列表每一个元素计算均值
+```
+
+#案例：老王耗子药的单价，单位（元/袋）
+1、生成三年销售数据
+```{r}
+price <- list(year2014=36:33,year2015=32:35,year2016=30:27)
+```
+
+2、lapply()的使用
+    这个函数其实可以对列表中的每个元素实施某种“相同的操作”，在上面的示例中这个“相同的操作”就是求均值，当然也可以换成求方差，求分位数等等其他可以对数值向量操作的函数
+计算每年均值
+```{r}
+lapply(price,mean)
+```
+
+3、计算每年价格标准差
+```{r}
+lapply(price,sd)
+```
+
+4、计算每年价格的四分位数
+```{r}
+lapply(price,quantile)
+```
+
+5、sapply,默认返回向量或者矩阵
+    均值求出来了，但它仍以列表形式输出，那么如何以向量、矩阵形式输出呢？此处就可以用到函数sapply()。sapply()与lapply()的工作原理类似，只是直接让输出的结果就是想要的矩阵或向量，无需再做转换
+```{r}
+sapply(price,mean)
+
+sapply(price,sd)
+
+sapply(price,quantile)
+```
+
+6、mapply()-多列表之间的运算
+   它能对多个list中相同位置的元素共同作用，也就是sapply()的多变量版本。
+```{r}
+amount <- list(year2014=rep(200,4),year2015=rep(100,4),year2016=rep(300,4))
+amount
+```
+  
+```{r}
+price
+```
+  
+  把每年每个季度的价格与它对应的销量相乘，算出每个季度的总收入。
+```{r}
+income_quarter <- mapply("*",price,amount)
+income_quarter
+```
+
+   这里，mapply()函数分别把price第一个元素year2014与amount的第一个元素year2014相乘，price第二个元素year2015与amount的第二个元素year2015相乘，依次类推。由于这里所指的每个元素都是一个向量，因此它们相乘的结果仍然是一个向量，最终组合起来即是一个矩阵。注意：使用mapply()函数需要在第一个参数中规定一个函数（这里是“*”），后面几个参数填入列表、向量等。
+   
+
+## 3、R中的数据透视表——神奇的ddply()
+在数据分析实战中，excel最常用的功能是vlookup和数据透视表，尤其是数据透视表。在R中，使用plyr包中的ddply函数可以轻松实现类似数据透视表的分组计算不同量的功能。
+ddply的基本用法：ddply(data,.variable,fun=)
+ddply是按照数据框某种属性分组，然后分别应用同一函数的操作。第一个参数是数据框，第二个参数是分组标记，这个标记可以是多个分类变量，第三个参数是函数。
+ddply的应用逻辑就是按照第二个参数定义的分组标准把数据框分成多个子数据框，然后第三个参数函数作为输入。
+```{r}
+library(plyr)
+data <- read.csv("C:\\Users\\qian\\Desktop\\电影数据.csv",stringsAsFactors = F)
+str(data)
+```
+(1)根据电影类型进行分组，查看不同类型电影票房的平均水平
+```{r}
+popular_type <- ddply(data,.(type),function(x){mean(x$boxoffice)})
+head(popular_type)
+```
+
+(2)根据电影类型和电影时长同时分组，查看电影票房的平均水平
+```{r}
+long <- ddply(data,.(type,duration),function(x){mean(x$boxoffice)})
+head(long)
+```
+
+## 4、长宽表互换
+### 4-1宽变长melt
+数据分析中，常见的数据集是一行一个观测值，一列一个变量。但是有时候也会有这样的数据集出现，虽然也是很规整的表格形状。例如
+
+|姓名|性别|2017|2018|2019|
+|-|-|-|-|-|
+|赵丽颖|美女|300|400|900|
+|陈伟霆|帅哥|400|450|880|
+
+后3列都在时间这个纬度上，那么可以直接添加时间纬度变量并取出值吗，这就是宽表变长表问题。我们希望转换完为：
+
+|姓名|性别|年份|粉丝数|
+|-|-|-|-|
+|赵丽颖|美女|2017|300|
+|赵丽颖|美女|2018|400|
+|赵丽颖|美女|2019|900|
+|陈伟霆|帅哥|2017|400|
+|陈伟霆|帅哥|2018|450|
+|陈伟霆|帅哥|2019|880|
+
+这里可以使用reshape2包中的melt函数。
+
+melt()函数的使用方法
+melt(data,id.vars,measure.vars,variable.name=“variable”,…,na.rm=FALSE,value.name=“value”,factorsAsStrings=TRUE)
+参数解释
+id.vars:标识变量（依旧在列上，位置保持不变的变量）
+measure.vars：度量变量（需要放进同一列的变量）
+variable.name：为新列变量取名
+value.name：对应值所在的变量名
+
+1)先造表
+```{r}
+mwide <- data.frame(name=c("赵丽颖","陈伟霆"),type=c("美女","帅哥"),GF2017=c(300,400),GF2018=c(400,450),GF2019=c(900,800))
+head(mwide)
+```
+2)去掉字段中的GF
+```{r}
+colnames(mwide)[3:5] <- gsub("GF","",colnames(mwide)[3:5])
+mwide
+```
+
+3)宽表变长表
+```{r}
+library(reshape2)
+mlong <- melt(mwide,id.var=c("name","type"),variable.name="year")
+mlong
+
+str(mlong)
+```
+melt函数是一个专门把宽表收起来，把多列变一个变量下的属性函数，参数id.var是设定哪列定住不动。参数variable.name设定新列的名字。
+
+```{r}
+library(reshape2)
+mlong1 <- melt(mwide,id.var=c("name","type"),variable.name="year",value.name = "fans number")
+mlong1
+
+```
+
+
+### 4-2长变宽dcast
+长变宽使用reshape2中的dcast函数
+```{r}
+dcast(mlong,name+type~year)
+```
+dcast第一个参数是数据框，第二个采用公式参数，左边是每个变量都会有的，右边被当成因子型
+
+
+
+
+
+
+
+
+
+
+
+
+

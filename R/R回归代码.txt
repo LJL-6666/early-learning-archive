@@ -1,0 +1,97 @@
+rm(list = ls())
+#读入数据
+data1 = read.csv("F:/项目/狗熊会培训/Task4/01 simudata.csv")
+
+cor(data1)
+cor_matr = cor(data1[,2:8])
+
+library(corrplot)
+corrplot(cor_matr, type="upper", order="hclust", tl.col="black", tl.srt=45) #相关矩阵图
+
+cor_matr = cor(data1[,4:7])
+corrplot(cor_matr, type="upper", order="hclust", tl.col="black", tl.srt=45) #相关矩阵图
+
+str(data1)
+#设定因子
+data1$性别=as.factor(data1$性别)
+data1$已婚_未婚=as.factor(data1$已婚_未婚)
+data1$已育_未育=as.factor(data1$已育_未育)
+data1$教育水平=as.factor(data1$教育水平)
+data1$英语水平=as.factor(data1$英语水平)
+
+##简单回归
+fit0 = lm(收入 ~教育水平+消费理念,data = data1)
+summary(fit0)
+fit = lm(收入 ~.,data = data1)
+summary(fit)
+
+##逻辑回归
+fit1 = glm(是否按期还款 ~ .,data = data1,family = binomial)
+summary(fit1)
+
+
+
+##预测结果
+pre=predict(fit1,data=data1)
+p=exp(pre)/(1+exp(pre))
+datap=data.frame(data1,p)
+
+#计算伪R^2
+anova(fit1)
+mec2=1-anova(fit1)[9,4]/anova(fit1)[1,4]
+
+
+
+
+#准则选择变量
+library(MASS)
+#AIC准则
+fit2=step(fit1,trace=F)
+summary(fit2)
+#BIC准则
+fit3 = step(fit1,k=log(nrow(data1)),trace=F)
+summary(fit3)
+
+
+
+#计算混淆矩阵
+data11=predict(fit1,data1,type="response")
+data12=ifelse(data11>0.5,1,0)
+data12
+#计算准确率
+confusematrix=table(data1$是否按期还款,data12)
+confusematrix
+p=(confusematrix[1,1]+confusematrix[2,2])/sum(confusematrix)
+p
+
+
+
+install.packages("pROC")
+library(pROC)
+# AIC准则挑选变量
+fit2 = step(fit1)
+summary(fit2)
+pre2 = predict(fit2,type='response')
+datapre2=data.frame(pre2,data1$是否按期还款)
+modelroc2 = roc(data1$是否按期还款,pre2)
+#计算AUC值
+(auc2 = auc(modelroc2))
+
+#绘制ROC曲线
+plot(modelroc2,print.auc=F,main="AIC准则选择模型",xlab="specificity 特异度",ylab="sensitivity 灵敏度")
+text(0.25,0.5,"AUC-value=0.759") 
+
+
+##分测试集的回归
+split = sample(nrow(data1),nrow(data1)*(7/10),replace=F)
+train = data1[split,]# 训练
+test = data1[-split,]# 测试
+model = glm(formula = 是否按期还款 ~ ., family = "binomial",data = train)
+summary(model)
+p = predict(model,test,type="response")
+error=p-test$是否按期还款
+summary(error)
+
+roc = roc(test$是否按期还款,p)
+auc = auc(roc)
+

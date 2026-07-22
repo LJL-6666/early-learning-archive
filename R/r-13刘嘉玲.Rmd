@@ -1,0 +1,51 @@
+---
+title: "R-13画图"
+author: "刘嘉玲"
+date: "2019年10月25日"
+output: html_document
+---
+
+###1、绘制islands数据中前5大岛屿的面积柱形图。
+
+```{r}
+data(islands)
+a<-head(sort(islands,decreasing=TRUE),5)
+a=a[order(a, decreasing = T)]
+barplot(a,names.arg = names(a)[1:5],col = rainbow(5, alpha = 0.4),xlab = "岛屿名称", ylab="面积") 
+```
+
+
+###2、绘制islands数据中前5大岛屿的面积饼图
+
+```{r}
+pie(a,labels = c("Asia", "Africa", "Antarctica", "Australia","Axel Heiberg"), main = "前5大岛屿的面积饼图", col = 2:5,alpha = 0.1)
+```
+
+
+###3、绘制电影数据.csv中票房的直方图,一个画板画2幅图，一个用淡蓝色lightblue,一个用红色red，第二个直方图x的范围为【0，80000】
+
+```{r}
+m=read.csv("F:\\异类语言\\R\\第13次课\\作业\\film.csv")
+head(m)
+par(mfrow = c(1, 2))
+chara1 = sort(m$boxoffice)[1:80000] 
+hist(chara1, breaks = 10, xlab = "票房", ylab = "频率", main = "", col = "lightblue")
+hist(chara1, breaks = 10, xlab = "票房", ylab = "频率", main = "", col = "red")
+```
+
+
+###4、绘制2019-07-09日到2019-08-03为期26天的《亲爱的热爱的》百度搜索指数折线图。每日搜索指数具体见百度指数。
+
+```{r}
+library(zoo)
+z = c(13681,22722,36950,54662,62657,69881,71941,68911,65203,39067,63703,67933,63779,72872,114668,97226,84052,79204,67328,62199,56818,52422,49321,45728,35410,27816) / 10000
+date = seq(as.Date("2019-07-09"), length = 26, by = "day")
+q = zoo(z, date)
+class(q) 
+plot(q, xaxt = "n", xlab = "时间", ylab = "百度搜索指数（万）", main = "《亲爱的 热爱的》搜索指数折线图")
+times = date
+ticks = seq(times[1], times[length(times)], by = "weeks") 
+q = c("7月8日", "7月15日", "7月22日", "7月29日")
+axis(1, at = ticks, labels = q, tcl = -0.3)
+```
+

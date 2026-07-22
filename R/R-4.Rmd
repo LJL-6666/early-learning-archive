@@ -1,0 +1,220 @@
+---
+title: "R-4"
+author: "程茜"
+date: "2019/9/9"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R—4
+###一、因子型
+1、因子创建
+变量归结为名义型、有序型或者连续变量，名义无顺序之分，有序型是一种顺序关系，而非数量关系。
+因子型数据通常可用命令factor()来定义，因子型转换字符型数据分成两步：第一步区分字符有几类，形成类型到整数的映射；第二步将原字符按照整数形式存储。
+
+```{r}
+gender <- factor(c("男","女","男","女","女"))
+gender
+```
+```{r}
+call <- c(1,15,23,46)
+class(call)
+f_call <- factor(call)
+class(f_call)
+f_call
+```
+备注：R默认创建数据框时，将文本类型存储为因子型。如果想取消此操作，可在data.frame函数或read.csv函数中设置stringAsFactors=F参数。
+
+2、因子水平
+可通过levels()函数输出因子水平
+```{r}
+levels(gender)
+class(levels(gender))
+```
+levels的元素都是character类型，可以通过as.character()函数将因子型转化为字符型.
+
+通过设置factor函数中的参数，可以修改因子水平。
+```{r}
+calls_num<-c(15,1,63,19,122)
+f_calls_num<-factor(calls_num,labels=c('a','b','c','d','e'),ordered=TRUE)
+f_calls_num
+```
+labels表示对因子水平重命名，ordered=TRUE表示建立有序分类。
+
+```{r}
+class <- factor(c("poor","improved","excellent"),ordered = T)
+class
+```
+它内部的存储方式是1=excellent, 2=Improved, 3=poor,按照默认的字母顺序创建.
+
+3、如何改变因子型数据各水平的编码顺序？
+如果按照字母排的顺序不是我们想要的逻辑顺序怎么办呢？同样好解决，只要设置factor()的level参数即可。什么时候会用到因子但又不满意因子水平的排列顺序呢？举个例子，画分组箱线图的时候，可能会发现几个箱子的排列顺序不对劲或者不满意，这其实就是因为因子的水平定义顺序不当，这时就可以通过levels参数改变因子水平编码方式，从而让图按照设想排列好.
+```{r}
+class <- factor(c("poor","improved","excellent"),ordered = T,levels=c("poor","improved","excellent"))
+class
+```
+
+4、连续数据分组
+前面讲的例子中，要根据次数大小对数据进行离散化分组，此时可通过cut()函数实现。
+```{r}
+s_num2<-cut(calls_num, breaks = c(0, 10,  100,Inf),
+labels = c('dipin','zhongpin','gaopin'),include.lowest = T,ordered_result = T) 
+s_num2
+```
+
+备注：1）、节约存储空间。随硬件能力的提升，人们现在不太关注用因子型来提高存储效率，但R保留了这个方式。
+
+2）、因子型变量为离散变量，可通过定义因子型变量区分离散变量。
+
+5、案例讲解
+案例1
+```{r}
+data(iris)
+str(iris)
+```
+物种(Species)列是因子型(Factor)数据，3个组别(levels)分别为：setosa、versicolor和virginica
+```{r}
+table(iris$Species)
+```
+```{r}
+levels(iris$Species)
+```
+
+问题1:如果现在想将类别名称对应改为0,2,1
+```{r}
+iris$Species <- factor(iris$Species,levels=c("setosa","versicolor","virginica"),labels=c(0,2,1))
+iris$Species[1:10]
+```
+
+问题2:上问最外层有个转换为因子型数据的操作factor()，由于其本身已经是因子型，故多余，可直接通过 levels() 更改:
+```{r}
+levels(iris$Species) <- c("versicolor","virginica","setosa")
+iris$Species[1:10]
+```
+
+（选择）6、提高内容
+(1) 数值的因子型转化为数值型如何做？
+
+```{r}
+age <- factor(c(34,32,45))
+class(age)
+age1 <- as.numeric(age)
+age1
+```
+```{r}
+
+age2 <- as.numeric(as.character(age))
+age2
+mean(age2)
+```
+
+
+(2)如何将因子型和字符型数据互相转化？
+秘诀是一类as.函数，as.factor()可以把其他类型数据转换成因子型；as.character()可以把其他类型数据转换成字符型。
+字符变因子
+```{r}
+all <- c("男","女","女","男")
+class(all)
+gender <- as.factor(all)
+class(gender)
+```
+
+因子变字符
+```{r}
+class(gender)
+all <- as.character(gender)
+class(all)
+```
+
+
+###二、列表
+列表这个数据结构则可以容纳各种类型的数据对象，向量、矩阵、数据框甚至一个列表也可以成为另一个列表的元素。
+1、创建
+采用函数list(a,b,c,d)就可以把a,b,c,d四个对象组合成一个list对象
+```{r}
+a <- "abc"
+b <- c(3,4,5)
+c <- matrix(rep(1,12),ncol=4,nrow=3)
+d <- data.frame(x=seq(1:4),y=paste("boy_",1:4))
+example <- list(a,b,c,d)
+example
+```
+
+2、基本操作
+查看，引用和添加元素
+(1)使用str()函数查看列表全貌
+```{r}
+str(example)
+```
+
+(2)用list()函数给列表里的元素命名
+```{r}
+example <- list(NO1=a,NO2=b,NO3=c,NO4=d)
+example
+```
+
+(3)列表中元素引用
+$名称
+```{r}
+example$NO1
+example$NO2
+```
+
+序号引用,子列表
+```{r}
+example['NO1']
+mode(example[1])
+```
+
+引用内容[[]]
+```{r}
+example[[1]]
+mode(example[[1]])
+```
+
+(4)重命名
+names()
+```{r}
+example
+names(example) <- c("字符串","数字","矩阵","数据框")
+```
+
+```{r}
+example
+```
+(5)对列表进行扩充
+```{r}
+example$向量 <- c(12,23,45)
+example
+```
+
+(6)提取列表的长度
+```{r}
+length(example)
+```
+
+(7)对列表进删减
+```{r}
+example <- example[-4]
+example
+```
+(8).列表的合并
+```{r}
+otherlist <- list(age=19,sex="male")
+lst <- c(example,otherlist)
+lst
+```
+(9)将列表的数据类型转换为向量的类型
+```{r}
+lst1 <- unlist(otherlist)
+lst1
+```
+
+
+
+
+
+

@@ -1,0 +1,127 @@
+---
+title: "R-9"
+author: "刘嘉玲"
+date: "2019年10月8日"
+output: html_document
+---
+
+##1、不使用R内建的函数，请设计下列函数
+##(1)mymax()，以向量c(1,2,3,4)来检验。
+
+```{r}
+mymax <- function(x)
+{
+  if(length(x)==0)
+    stop("1,2,3,4");
+  mymax=x[1]
+  for(i in 2:length(x))
+    if(x[i] > mymax)
+       mymax=x[i]
+  return(mymax)
+}
+v=c(1,2,3,4)
+mymax(v)
+```
+
+##(2)mymin()，以向量c(2,4,5,6)来检验。
+
+```{r}
+mymin <- function(x)
+{
+  if(length(x)==0)
+    stop("2,4,5,6");
+  mymin=x[1]
+  for(i in 2:length(x))
+    if(x[i] < mymin)
+       mymin=x[i]
+  return(mymin)
+}
+
+b <- c(2,4,5,6)
+mymin(b)
+
+```
+
+##2、计算系统内建数据集state.region，每一区各有多少州
+
+```{r}
+kk <- function(x)
+{
+  b=x[which(x=="South")]
+  a <- 0
+  for(i in 1:length(b))
+  {
+      a<-a+1
+  }
+  c=x[which(x=="West")]
+  d <- 0
+  for(i in 1:length(c))
+  {
+      d<-d+1
+  }
+  e=x[which(x=="Northeast")]
+  f <- 0
+  for(i in 1:length(e))
+  {
+      f<-f+1
+  }
+  g=x[which(x=="North Central")]
+  h<-0
+  for(i in 1:length(g))
+  {
+      h<-h+1
+  }
+  v=c(a,d,f,h)
+  da <- data.frame(zhou=c("South","West","Northeast","NorthCentral"),v)
+  for(i in 1:dim(da)[1])
+     for(j in 1:dim(da)[2])
+         print(da[i,j])
+}
+kk(state.region)
+```
+
+##3、使用state.x77数据集，配合state.region，编写程序计算美国4大区的一下数据。
+##（1）人口数各多少 （2）面积各多少 （3）收入平均是多少
+
+```{r}
+states <- data.frame(state.x77,state = state.region)
+head(states)
+gg<-function(x)
+{
+  a<-(data.frame(state.x77,state.region))
+  b<-a[a$state.region==x,]
+  k<-0
+for(i in 1:length(b$Population))
+  k<-k+b[i,1]
+  n<-0
+for(i in 1:length(b$Income))
+  n<-n+b[i,2]
+  m<-n/length(b$Income)
+  g<-0
+for(i in 1:length(b$Area))
+  g<-g+b[i,8]
+r=data.frame(x,k,m,g)
+ names(r)<-c("zhou","popu","income","area")
+ return(r)
+}
+gg("South")
+gg("West")
+gg("Northeast")
+gg("North Central")
+```
+
+##4、编写一个名为vms()的函数来计算向量的最大5个数的均值，并返回最大的5个值。使用向量v_c <- c(5,15,32,25,26,28,65,48,3,37,45,54,23,44)来检验。
+
+```{r}
+vms <- function(x)
+{
+  xx=rev(sort(x))
+  xx=xx[1:5]
+  mean(xx)
+  return(list(xbar=mean(xx),top5=xx))
+}
+v_c <- c(5,15,32,25,26,28,65,48,3,37,45,54,23,44)
+vms(v_c)
+```
+
+END

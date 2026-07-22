@@ -1,0 +1,57 @@
+---
+title: 'R-10'
+author: "刘嘉玲"
+date: "2019年10月15日"
+output: html_document
+---
+
+##1、导入文件夹中的某厂1-3月污水排放数据，每张数据表只取第1，6列，最后并合成一个数据
+
+```{r}
+setwd("C:\\Users\\hp\\Desktop\\某厂1至3月污水排放数据")
+filenames <- dir("C:\\Users\\hp\\Desktop\\某厂1至3月污水排放数据")
+filenames
+rbindall <- function(x,y){rbind(x,y)}
+dat <- list()
+for(i in 1:length(filenames))
+{
+  dat[[i]]=read.csv(filenames[i],stringsAsFactors=F,header=T)
+}
+names(dat) <- filenames
+dat_new <- lapply(dat,function(x){x[,c(1,6)]})
+rbinda11 <- function(x,y){rbind(x,y)}
+dataout <- Reduce(rbindall,dat_new)
+head(dataout)
+```
+
+##2、导入某厂1，2，3月份污水排放数据，每张数据表只取第1，6列，最后并合成一个数据
+
+```{r}
+setwd("C:\\Users\\hp\\Desktop\\某厂1、2、3月份污水排放数据")
+file <- dir("./")
+file
+rbindal <- function(x,y){rbind(x,y)}
+datalist2 <- list()
+for(k in 1:length(file))
+{
+  file1=dir(paste0("./",file[k]))
+  if(length(file1)>0)
+  {
+    input=paste0("./",file[k],"/",file1)
+    datalist=list()
+    for(i in 1:length(input))
+    {
+      data1=read.csv(input[i],header=T,stringsAsFactors=F)
+      data1=data1[,c(1,6)]
+      datalist[[i]]=data1
+    }
+  }
+  da=Reduce(rbindal,datalist)
+  datalist2[[k]]=da
+}
+
+datae <- Reduce(rbindal,datalist2)
+head(datae)
+```
+
+END

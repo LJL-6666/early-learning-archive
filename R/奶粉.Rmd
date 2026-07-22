@@ -1,0 +1,57 @@
+---
+title: "婴儿奶粉"
+author: "刘嘉玲"
+date: "2019年12月7日"
+output: html_document
+---
+
+
+```{r}
+library("readxl")
+n=read.csv("C:\\Users\\hp\\Desktop\\数码宝贝\\题\\低体重出生婴儿数据.csv",header=T,fileEncoding="gbk")
+n
+```
+
+
+```{r}
+zhong=c(n$bwt)
+
+##体重均值
+mean(zhong)
+
+##产妇年龄对低体重婴儿的相关性
+a=cor(n$low,n$age)
+a
+##产妇妊娠前体重对低体重婴儿的相关性
+b=cor(n$low,n$lwt)
+b
+##种族对低体重婴儿的相关性
+c=cor(n$low,n$race)
+c
+##产妇在妊娠期间是否吸烟对低体重婴儿的相关性
+d=cor(n$low,n$smoke)
+d
+##产妇妊娠前早产次数对低体重婴儿的相关性
+f=cor(n$low,n$ptl)
+f
+##是否患有高血压对低体重婴儿的相关性
+g=cor(n$low,n$ht)
+g
+##子宫对按摩、催产素等刺激引起收缩的应激性对低体重婴儿的相关性
+h=cor(n$low,n$ui)
+h
+##妊娠前三个月社区医生随访次数对低体重婴儿的相关性
+p=cor(n$low,n$ftv)
+p
+```
+
+
+```{r}
+vv=c(a,b,c,d,f,g,h,p)
+plot(vv)
+```
+
+
+
+
+

@@ -1,0 +1,99 @@
+---
+title: "R-5作业"
+author: "程茜"
+date: "2019/9/18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+1、使用read.table读入"西安二手房数据.csv"数据,并显示其前六行
+
+```{r}
+hotpot <- read.table("//Users//chengqian//Desktop//数据读入//西安二手房数据.csv",fileEncoding = "GBK",sep=",")
+head(hotpot)
+```
+
+2、使用read.csv读入"陶瓷数据.csv"数据,并显示其前六行
+```{r}
+house <- read.csv("//Users//chengqian//Desktop//数据读入//陶瓷数据.csv")
+head(house)
+```
+
+3、读入“商家基本信息表.xlsx”数据,并显示其前六行
+```{r}
+library(readxl)
+business <- read_xlsx("//Users//chengqian//Desktop//数据读入//商家基本信息表.xlsx")
+head(business)
+```
+
+4、 读入“宽带数据.csv”，并显示其前六行
+
+```{r}
+data <- read.csv("//Users//chengqian//Desktop//数据读入//宽带数据.csv",fileEncoding = 'GBK')
+head(data)
+```
+
+5、读入数据“reportID.txt”，并显示其前六行
+```{r}
+report <- read.table("//Users//chengqian//Desktop//数据读入//reportID_0.txt" )
+head(report)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+rm(list = ls())
+
+#读入数据
+data1 = read.csv("C:/Users/helmos/Desktop/金融数据处理与分析/4 可视化/01 simudata.csv")
+
+
+
+#柱状图
+#教育
+data1$教育水平=factor(data1$教育水平,levels=c(1,2,3,4),labels=c('高中及以下','大专或本科','硕士研究生','博士研究生及以上'))
+jiaoy=tapply(data1$教育水平,INDEX=data1$教育水平,FUN=length)
+barplot(jiaoy,xlab="教育水平",ylab="人数",col="green",ylim=c(0,350))
+#英语
+data1$英语水平=factor(data1$英语水平,levels=c(1,2,3,4),labels=c('四级以下','四级','六级','六级以上'))
+yingy=tapply(data1$英语水平,INDEX=data1$英语水平,FUN=length)
+barplot(yingy,xlab="英语水平",ylab="人数",col="Moccasin",ylim=c(0,350))
+
+##折线图
+zhex=tapply(data1$收入,INDEX=data1$教育水平,FUN=mean)
+plot(zhex,type="b",col="blue",xlab="教育水平",ylab="收入",main="教育水平收入折线图",ylim=c(0,30000))
+plot(data1$收入,type="l",col="blue",ylim=c(0,130000))
+
+
+##饼图
+jiaoyu1=table(data1$教育水平)
+pie(jiaoyu1,cex=0.8,main="教育水平占比",cex.main=0.88)
+
+
+#直方图
+hist(data1$收入,xlab="收入  单位：元",ylab="频率",main="收入分布直方图",col="blue",ylim=c(0,350))
+hist(data1$微博好友数,xlab="微博好友数  单位：人",ylab="频率",main="收微博好友分布直方图",col="yellow",ylim=c(0,300))
+hist(data1$消费理念,xlab="消费理念  (消费理念=信用卡消费/总消费)",ylab="频率",main="消费理念分布直方图",col="red",ylim=c(0,200))
+
+
+#箱线图
+str(data1)
+data1$是否按期还款=as.factor(data1$是否按期还款)
+
+boxplot(收入~是否按期还款,data=data1,xlab="是否还款",ylab="收入",col="Moccasin",main="是否还款与收入对比箱线图",ylim=c(0,122000))
+
+boxplot(微博好友数~是否按期还款,data=data1,xlab="是否还款",ylab="微博好友数",col="Cyan3",main="是否还款与微博好友数对比箱线图",ylim=c(0,120))
+
+boxplot(消费理念~是否按期还款,data=data1,xlab="是否还款",ylab="消费理念",col="Gold1",main="是否还款与消费理念对比箱线图",ylim=c(0,1))
+
+boxplot(教育水平~是否按期还款,data=data1,xlab="是否还款",ylab="教育水平",col="Purple",main="是否还款与教育水平对比箱线图",ylim=c(0,5))
+
+boxplot(英语水平~是否按期还款,data=data1,xlab="是否还款",ylab="教育水平",col="red",main="是否还款与英语水平对比箱线图",ylim=c(0,5))

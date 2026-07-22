@@ -1,0 +1,257 @@
+---
+title: "R-12数据分析与处理"
+author: "程茜"
+date: "10/2/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 一、随机抽样
+### 1、sample
+使用的函数sample,sample(x,size,replace)
+x:向量，随机数样本范围
+size:抽样的个数
+replace:默认FALSE，无放回；TRUE，有放回。
+prob:设置某些想改变抽取概率的样本权重
+```{r}
+sample(1:43,5)
+```
+
+### 2、种子值
+当我们想让不同的试验者获取相同的随机数，可以使用种子值。当设置种子后，在相同种子值后sample所产生的随机数相同。下面的代码运行多遍都一样。
+```{r}
+set.seed(1)
+sample(1:43,43)
+
+```
+
+### 3、比重的设置
+实例：掷骰子，将1，6的比重设置为其他的5倍被随机抽中。
+```{r}
+sample(1:6,12,T,c(5,1,1,1,1,5))
+```
+
+```{r}
+sample(1:6,12,T,c(5,1,1,1,1,5))
+```
+
+```{r}
+sample(1:6,12,T,c(5,1,1,1,1,5))
+```
+
+```{r}
+sample(1:6,12,T,c(5,1,1,1,1,5))
+```
+
+## 二、数据框数据抽取—对重复值的处理
+```{r}
+data(iris)
+str(iris)
+```
+
+抽取前八行
+```{r}
+iris[1:8,]
+```
+随机抽取8行数据
+```{r}
+x <- sample(1:nrow(iris),8)
+iris[x,]
+```
+
+### 1、重复值的搜索
+duplicated(),数值在第一次出现返回FALSE,未来重复出现返回TRUE
+```{r}
+duplicated(c(1,2,2,3,1,1,3))
+```
+从上例可以发现，数值出现第2次，则返回TRUE。
+
+```{r}
+duplicated(iris)
+```
+
+### 2、which()函数，可以传回重复值的索引
+```{r}
+which(duplicated(c(1,2,2,3,1,1,3)))
+```
+
+返回鸢尾花对象的重复值索引
+```{r}
+which(duplicated(iris))
+```
+
+### 3、抽取数据时取出重复值
+两种方法：（1）使用负值
+```{r}
+iris[-which(duplicated(iris)),]
+```
+
+会发现143行不见了。
+
+（2）直接使用逻辑运算语句，！
+```{r}
+iris[!duplicated(iris),]
+```
+
+## 三、数据框数据抽取—对NA的处理
+实际项目中，无法收集到正确信息，此时可能使用NA代表。
+
+### 1、去除含有NA值的行数据
+```{r}
+airquality
+```
+
+```{r}
+str(airquality)
+```
+
+可以看出，有很多NA出现。R中使用complete.cases函数，如果数据完整，返回TRUE，否则，F。
+```{r}
+complete.cases(airquality)
+```
+
+抽取数据时，去除含NA的
+```{r}
+air_new <- airquality[complete.cases(airquality),]
+air_new
+```
+
+```{r}
+str(air_new)
+```
+
+
+###  2、na.omit，去除含有NA的行
+```{r}
+air_na <- na.omit(airquality)
+air_na
+str(air_na)
+```
+
+
+### 3、向量类型判断缺失值is.na和缺失值的填补which
+```{r}
+x<-c(1,2,3,NA)
+is.na(x)  #返回一个逻辑向量，TRUE为缺失值，FALSE为非缺失值
+table(is.na(x))  #统计分类个数
+sum(x)  #当向量存在缺失值的时候统计结果也是缺失值
+sum(x,na.rm = TRUE)  #很多函数里都有na.rm=TRUE参数，此参数可以在运算时移除缺失值
+x[which(is.na(x))]<-0 #可以用which()函数代替缺失值，which()函数返回符合条件的响应位置
+```
+
+### 4、数据框类型判断缺失值is.na、缺失值的填补which、缺失值所在行的删除na.omit
+```{r}
+test<-data.frame(x=c(1,2,3,4,NA),y=c(6,7,NA,8,9))
+is.na(test)  #test中空值的判断
+which(is.na(test),arr.ind = T)  #arr.ind=T可以返回缺失值的相应行列坐标
+test[which(is.na(test),arr.ind = T)]<-0 #结合which进行缺失替代
+test_omit<-na.omit(data.frame(x=c(1,2,3,4,NA),y=c(6,7,NA,8,9))) #na.omit函数可以直接删除值所在的行
+ 
+```
+
+
+### 5、识别缺失值的基本语法汇总
+```{r}
+str(airquality)
+complete.cases(airquality)  #判断个案是否有缺失值
+ 
+airquality[complete.cases(airquality),]  #列出没有缺失值的行
+nrow(airquality[complete.cases(airquality),])  #计算没有缺失值的样本量
+ 
+airquality[!complete.cases(airquality),]  #列出有缺失的值的行
+nrow(airquality[!complete.cases(airquality),])  #计算有缺失值的样本量
+ 
+is.na(airquality$Ozone)  #TRUE为缺失值，FALSE为非缺失值
+table(is.na(airquality$Ozone))
+complete.cases(airquality$Ozone)  #FALSE为缺失值，TRUE为非缺失值
+table(complete.cases(airquality$Ozone))
+ 
+#可用sum()和mean()函数来获取关于缺失数据的有用信息
+sum(is.na(airquality$Ozone))  #查看缺失值的个数
+sum(complete.cases(airquality$Ozone))  #查看没有缺失值的个数
+mean(is.na(airquality$Ozone))  #查看缺失值的占比
+mean(is.na(airquality))  #查看数据集airquality中样本有缺失值的占比
+```
+
+## 四、连续数据离散化
+### 1、cut函数
+cut可以实现数据等量切割，切割后的数据将是因子数据类型
+实例：将state.x77对象依人口数切分成5等分
+```{r}
+popu <- state.x77[,'Population']
+cut(popu,5)
+```
+
+分割时直接使用lable设定名称
+```{r}
+x.popu <- cut(popu,5,labels=c("Low","4th","3rd","2nd","High"))
+x.popu
+table(x.popu)
+```
+
+### 2、不等距分割
+例：
+```{r}
+state.newx77 <- as.data.frame(state.x77)
+head(state.newx77)
+range(state.newx77$Population)
+```
+
+例：人口数在365-1000，低；1000-15000，中，15000-21198，高
+```{r}
+state.newx77$type[state.newx77$Population>=365&state.newx77$Population<1000]="低"
+state.newx77$type[state.newx77$Population>=1000&state.newx77$Population<15000]="中"
+state.newx77$type[state.newx77$Population>=15000&state.newx77$Population<=21198]="高"
+head(state.newx77)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

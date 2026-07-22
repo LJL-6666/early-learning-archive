@@ -1,0 +1,105 @@
+---
+title: "R-4作业"
+author: "刘嘉玲"
+date: "2019年9月17日"
+output: html_document
+---
+
+##一、列表
+##1、创建以下列表
+```{r}
+a <- "abc"
+b <- c(3,4,5)
+c <- matrix(rep(1,12),ncol=4,nrow=3)
+example <- list(a,b,c)
+example
+```
+
+##2、创建列表complex,并且实现其元素提取
+##(1) 创建列表
+```{r}
+example1 <- (complex <- list(first=c(1,2),second= c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z")))
+complex
+example2 <- (complex <- list(second2= matrix(rep(1:4),ncol=2,nrow=2)))
+example2
+
+```
+
+##(2) 利用名字索引提取其中的first
+```{r}
+n1 <- list(example1$first)
+n1
+```
+
+##(3) 利用序号提取第一个元素
+```{r}
+n2 <- list(example1[[1]])
+n2
+```
+
+##(4)利用序号添加元素
+```{r}
+example <- list(complex <- list(first=c(1,2),second= c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z")));
+complex
+example <- list(complex <- list(second2= matrix(rep(1:4),ncol=2,nrow=2)));
+example
+example3 <- list(d <- list(matrix(rep(1,6),ncol=3,nrow=2)))
+example3
+
+
+p <- list(matrix(rep(1,6),ncol=3,nrow=2))
+example1[3] <- p
+example1
+
+```
+
+##(5)利用名字添加元素
+```{r}
+example <- (complex <- list(first=c(1,2),second= c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z")));
+complex
+example <- (complex <- list(second2= matrix(rep(1:4),ncol=2,nrow=2)));
+example
+example3 <- (d <- list(matrix(rep(1,6),ncol=3,nrow=2)))
+example3
+example4 <- (complex <- list(new=c(1,2,3,4,5)));
+example4
+```
+
+##创建一个经纬度地点的列表
+```{r}
+x1 = c(39.95,39.95,39.95,39.95,39.95)
+x2 = c(116.3,116.3,116.3,116.3,116.3)
+x3 = c("熊孩子玩耍基地","熊孩子玩耍基地","熊孩子玩耍基地","熊孩子玩耍基地","熊孩子玩耍基地")
+a <- data.frame(x1,x2,x3)
+names(a)[1] <- "经度"
+names(a)[2] <- "纬度"
+names(a)[3] <- "地点"
+
+y1 = c(39.96,39.96,39.96,39.96,39.96)
+y2 = c(116.4,116.4,116.4,116.4,116.4)
+y3 = c("论文生产基地","论文生产基地","论文生产基地","论文生产基地","论文生产基地")
+b <- data.frame(y1,y2,y3)
+names(b)[1] <- "经度"
+names(b)[2] <- "纬度"
+names(b)[3] <- "地点"
+
+z1 = c(39.97,39.97,39.97,39.97,39.97)
+z2 = c(116.5,116.5,116.5,116.5,116.5)
+z3 = c("工业实践基地","工业实践基地","工业实践基地","工业实践基地","工业实践基地")
+c <- data.frame(z1,z2,z3)
+names(c)[1] <- "经度"
+names(c)[2] <- "纬度"
+names(c)[3] <- "地点"
+
+lie <- list(a,b,c)
+lie
+
+```
+
+##使用do.call把列表中的元素合并
+```{r}
+
+dat_bind <- do.call("rbind",lie)
+dat_bind
+```
+

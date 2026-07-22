@@ -1,0 +1,59 @@
+---
+title: "R-9"
+author: "刘嘉玲"
+date: "2019年10月15日"
+output: html_document
+---
+
+##一、学生成绩数据完成以下操作
+##1、实现宽表变长表，固定姓名和性别
+
+```{r}
+library("readxl")
+library(reshape2)
+chengji=read_excel("C:\\Users\\hp\\Desktop\\成绩表.xlsx")
+a <- melt(chengji,id.vars = c("学生姓名","性别"),variable.name = "year_score")
+head(a)
+```
+
+##2、将上题中的长表变回宽表
+
+```{r}
+a[1:5,]
+mlong <- dcast(a,学生姓名+性别~year_score,mean)
+head(mlong)
+```
+
+
+##二、对泰坦尼克号数据完成以下操作
+##1、计算不同船舱的票价均值
+
+```{r}
+tai=read.csv("C:\\Users\\hp\\Desktop\\泰坦尼克号数据(1).csv",fileEncoding = "GBK",stringsAsFactors = T) 
+head(tai)
+colnames(tai)
+tai$船舱号 <- as.factor(as.character(tai$船舱号))
+str(tai)
+library(plyr)
+type_fare <- ddply(tai,.(船舱号),function(x)mean(x$票价,na.rm=T))
+head(type_fare)
+```
+
+
+##2、计算不同船舱的最高票价
+
+```{r}
+library(plyr)
+max_tai <- ddply(tai,.(船舱号),function(x)max(x$票价,na.rm=T))
+head(max_tai)
+```
+
+##3、计算不同性别的平均年龄
+
+```{r}
+library(plyr)
+y <- ddply(tai,.(乘客性别),function(x)length(x$乘客性别))
+head(y)
+```
+
+END

@@ -1,0 +1,65 @@
+rm(list = ls())
+
+#读入数据
+data1 = read.csv("C:/Users/helmos/Desktop/Task 2/Task 2/01 simudata.csv")
+
+
+
+#缺失值处理
+## 查看是否存在缺失值
+#是否存在缺失
+is.na(data1$收入)
+#缺失个数
+sum(is.na(data1$收入))
+#缺失比率
+sum(is.na(data1$收入))/length(data1$收入)
+
+##用0填补
+data1[is.na(data1)] = 0
+##只用完整样本
+data21=data1[complete.cases(data1),]
+data22= na.omit(data1)
+##均值补缺
+attach(data)
+y[is.na(y)]=mean(y,na.rm=T)
+x1[is.na(x1)]=mean(x1,na.rm=T)
+x2[is.na(x2)]=mean(x2,na.rm=T)
+data=data.frame(y,x1,x2)
+
+
+
+
+
+##选取列
+data2=data1[,(2:5)]
+
+#排序
+##降序
+data3=data1[order(data1$收入,na.last = NA,decreasing = T),]
+##升序
+data3=data1[order(data1$收入,na.last = NA,decreasing = F),]
+
+###抽取样本
+#筛选
+##常用subset
+data1=subset(data1,教育水平 == 1))
+data5=subset(data1,教育水平 == 1 & 英语水平 == 2 & 性别 == 1 )
+## which也能达到相同效果，但不能一次多重筛选
+data1=data[which(data$x1 == 2), ]
+#随机抽样
+data11= data1[sample(nrow(data1),50),]
+
+#去处重复项
+## 全部
+data9=data1[!duplicated(data1),]
+##某几列
+data9=data1[!duplicated(data1[,(2:3)]),]
+data9=data1[!duplicated(data1[,2]),]
+
+#数值替换
+attach(data)
+英语水平[英语水平==1]="四级"
+data=data.frame(data1,英语水平)
+
+##异常值处理，先观察是否存在，再处理，方法较多，此处取反去除
+data2=data1[-which(data1$英语水平==1),]

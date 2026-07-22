@@ -1,0 +1,41 @@
+---
+title: "R-14"
+author: "刘嘉玲"
+date: "2019年10月29日"
+output: html_document
+---
+
+###1、导入西安二手房数据，计算样本量
+```{r}
+a <- read.csv("F:\\异类语言\\R\\第14次课\\作业\\西安二手房数据.csv")
+head(a)
+```
+
+###2、画1*1的图，绘制总面积和单价的散点图
+```{r}
+plot(a$总面积,a$单价,pch=1,cex=0.5,xlab="面积（平方米)",ylab="单位面积房价（元/平方米）")
+```
+
+###3、画1*3的图，分别是单价与卧室数、厅数、楼层的箱线图
+```{r}
+par(mfrow=c(1,3))
+boxplot(单价~卧室数,a,col="lightblue",alpha=0.4,xlab="卧室数",ylab="单位面积房价（元/平方米）")
+boxplot(单价~厅数,a,col="red",alpha=0.4,xlab="厅数",ylab="单位面积房价（元/平方米）")
+boxplot(单价~楼层,a,col="yellow",alpha=0.4,xlab="楼层",ylab="单位面积房价（元/平方米）")
+```
+
+###4、绘制销售占比柱形图，从高向低排序（销售占比的计算可以在统计完每个城区的房子后使用prop.table函数直接算占比，具体prop.table函数自己百度）
+```{r}
+n <- table(a$城区)
+v <- head(sort(n,decreasing=TRUE))
+v=v[order(v,decreasing = T)]
+l=prop.table(v)
+barplot(l,names.arg = names(l)[1:6],col = rainbow(8,alpha = 0.4),xlab = "域区",ylab="销售百分比")
+```
+```{r}
+n1 <- table(a$单价)
+v1 <- head(sort(n1,decreasing=TRUE))
+v1=v1[order(v1,decreasing = T)]
+boxplot(单价~城区,a,col="yellow",alpha=0.4,xlab="城区",ylab="单位面积房价（元/平方米）")
+```
+
