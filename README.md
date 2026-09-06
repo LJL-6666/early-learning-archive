@@ -19,3 +19,15 @@
 | `keygraph` | KeyGraph 相关 |
 
 > 本仓库由原独立仓库合并归档，仅保留文件内容，未保留各自的提交历史。
+
+## 关于本仓库内容
+
+- 本仓库为 2020–2021 年的学习与练习归档，代码以 MIT 发布（见 [`LICENSE`](LICENSE)）。
+- `Data-analysis-report-collection/优秀作品展示/` 现仅保留**本人作品**。此前该目录还收录了
+  他人的报告与汇报文件，因无授权且署名不清，已从仓库及其历史中移除。
+- 爬虫练习 notebook 中原先写死的真实会话 Cookie（`JSESSIONID` / `guid` / `bid` 等）已替换为
+  `<YOUR_SESSION_ID>` 之类的占位符。运行这些示例需自行填入本机抓取的值——**不要把真实
+  Cookie 提交进版本库**。
+- `NLP/` 下的楷体字体文件（`simkai.ttf`）为商业授权字体，已移除。
+  `NLP/实验5 绘制词云.py` 中的 `font_path` 请自行指向本机字体，例如 macOS 的
+  `/System/Library/Fonts/Supplemental/Songti.ttc`，或任一开源中文字体（如思源黑体）。
