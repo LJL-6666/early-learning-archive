@@ -23,8 +23,9 @@
 ## 关于本仓库内容
 
 - 本仓库为 2020–2021 年的学习与练习归档，代码以 MIT 发布（见 [`LICENSE`](LICENSE)）。
-- `Data-analysis-report-collection/优秀作品展示/` 现仅保留**本人作品**。此前该目录还收录了
-  他人的报告与汇报文件，因无授权且署名不清，已从仓库及其历史中移除。
+- `Data-analysis-report-collection/优秀作品展示/` 下的报告与汇报**均为本人作品**。
+  部分文件的文档元数据此前显示为设备默认用户名（如 `hp`）、旧昵称或 PPT 模板署名，
+  已统一更正为作者本人。
 - 爬虫练习 notebook 中原先写死的真实会话 Cookie（`JSESSIONID` / `guid` / `bid` 等）已替换为
   `<YOUR_SESSION_ID>` 之类的占位符。运行这些示例需自行填入本机抓取的值——**不要把真实
   Cookie 提交进版本库**。
